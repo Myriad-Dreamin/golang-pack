@@ -44,7 +44,7 @@ class GolangToolsImpl(object):
     runner: DefaultRunner
     config: GolangToolsConfig
 
-    def __init__(self, runner=None, config=None, **kwargs):
+    def __init__(self, runner=None, config=None, **_):
         self.config = config or GolangToolsConfig()
         self.runner = runner or GolangToolsImpl.DefaultRunner(self.config.verbose)
         self.env = self.go_env_obj()

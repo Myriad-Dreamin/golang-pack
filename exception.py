@@ -2,7 +2,7 @@ class GolangToolInvokeError(Exception):
     code: int
     msg: str
 
-    def __init__(self, *args, code, error_dump):
+    def __init__(self, *_, code, error_dump):
         self.code = code
         self.msg = error_dump
 

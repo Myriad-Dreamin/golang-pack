@@ -606,7 +606,7 @@ func main() {
 	var path = filepath.Join(cachePath, pkgName)
 	sugar.HandlerError0(os.MkdirAll(filepath.Dir(path), 0666))
 	var f *os.File
-	f, err = os.OpenFile(path, os.O_WRONLY|os.O_CREATE, 0666)
+	f, err = os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
 	sugar.HandlerError0(err)
 	defer f.Close()
 

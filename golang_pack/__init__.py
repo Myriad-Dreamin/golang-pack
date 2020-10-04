@@ -4,14 +4,21 @@ from pathlib import Path
 from typing import List, Union
 
 from binding_global import current_path
-from config import GolangPackConfig, ParseConfig, ModuleConfig, LoaderConfig
+from config import GolangPackConfig
 from utils.cache_io import cached_io
 from go_ast import FuncDesc
 from tools import GolangToolsConfig, GolangToolsImpl, AstDumperImpl
 
 
 class GolangPack(object):
+    # global configuration
     dialect_loader_mapping = dict()
+
+    @staticmethod
+    def register_loader(dialect_loader, loader_factory):
+        GolangPack.dialect_loader_mapping[dialect_loader] = loader_factory
+
+    # constructor
 
     def __init__(self, config):
         self.config = config  # type: GolangPackConfig
@@ -20,12 +27,6 @@ class GolangPack(object):
         self.go_env = None  # type: Union[dict, None]
 
         self.process_config()
-
-    # global configuration
-
-    @staticmethod
-    def register_loader(dialect_loader, loader_factory):
-        GolangPack.dialect_loader_mapping[dialect_loader] = loader_factory
 
     # getter
 
@@ -99,7 +100,8 @@ class GolangPack(object):
 
         if self.config.local_toolset:
             self.config.local_toolset = os.path.abspath(self.config.local_toolset)
-            replaces.append(f'github.com/Myriad-Dreamin/golang-pack {golang_pack_version} => {self.config.local_toolset}')
+            replaces.append(
+                f'github.com/Myriad-Dreamin/golang-pack {golang_pack_version} => {self.config.local_toolset}')
         else:
             golang_pack_version = 'latest'
         requires.append(f'github.com/Myriad-Dreamin/golang-pack {golang_pack_version}')
@@ -172,7 +174,7 @@ require(\n    {requires}\n)\n
         source_pieces.append(source[last_index:])
         dir_name = os.path.dirname(target_file)
         os.makedirs(dir_name, exist_ok=True)
-        cached_io.open_write(target_file, ''.join(source_pieces), 'w+')
+        cached_io.open_write(target_file, ''.join(source_pieces), 'w')
         self.toolset.go_fmt([target_file])
 
     def eval_file(self, file, target):
